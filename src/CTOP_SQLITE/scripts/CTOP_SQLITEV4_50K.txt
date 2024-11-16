@@ -1,0 +1,2 @@
+Tempo Query Mal Feita: 0.7218s
+Tempo Query Bem Feita: 0.0435s

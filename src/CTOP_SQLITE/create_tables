@@ -1,0 +1,113 @@
+-- Remover tabelas existentes, se houver
+DROP TABLE IF EXISTS Alocacao;
+DROP TABLE IF EXISTS Rota;
+DROP TABLE IF EXISTS Voo;
+DROP TABLE IF EXISTS Informe;
+DROP TABLE IF EXISTS FCA;
+DROP TABLE IF EXISTS Evento;
+DROP TABLE IF EXISTS ControladordeVoo;
+DROP TABLE IF EXISTS CompanhiaAerea;
+DROP TABLE IF EXISTS Aviao;
+
+-- Criar tabelas
+CREATE TABLE CompanhiaAerea (
+    codIATA CHAR(3) NOT NULL,
+    codICAO CHAR(3) NOT NULL,
+    nome VARCHAR(10) NOT NULL,
+    pais_origem VARCHAR(10) NOT NULL,
+    numero_rotas INT NOT NULL,
+    numero_aeronaves INT NOT NULL,
+    data_fundacao DATE,
+    PRIMARY KEY (codIATA, codICAO)
+);
+
+CREATE TABLE Aviao (
+    numero_cauda VARCHAR(10) NOT NULL,
+    codIATA CHAR(3) NOT NULL,
+    codICAO CHAR(3) NOT NULL,
+    modelo VARCHAR(10),
+    velocidade_media REAL NOT NULL,
+    tipo VARCHAR(10),
+    PRIMARY KEY (numero_cauda, codIATA, codICAO),
+    FOREIGN KEY (codIATA, codICAO) REFERENCES CompanhiaAerea (codIATA, codICAO)
+);
+
+CREATE TABLE Voo (
+    id_voo INT NOT NULL,
+    prioridade INT NOT NULL,
+    codIATA CHAR(3) NOT NULL,
+    codICAO CHAR(3) NOT NULL,
+    origem VARCHAR(10) NOT NULL,
+    destino VARCHAR(10) NOT NULL,
+    numero_cauda VARCHAR(10),
+    data_voo CHAR(10),
+    PRIMARY KEY (id_voo, prioridade, codIATA, codICAO),
+    FOREIGN KEY (codIATA, codICAO) REFERENCES CompanhiaAerea (codIATA, codICAO),
+    FOREIGN KEY (numero_cauda, codIATA, codICAO) REFERENCES Aviao (numero_cauda, codIATA, codICAO)
+);
+
+CREATE TABLE Evento (
+    latitude_evento REAL NOT NULL,
+    longitude_evento REAL NOT NULL,
+    inicio DATE,
+    previsao_tempo TIMESTAMP,
+    PRIMARY KEY (latitude_evento, longitude_evento)
+);
+
+CREATE TABLE ControladordeVoo (
+    id_controlador INT NOT NULL,
+    nome VARCHAR(40),
+    setor VARCHAR(10),
+    turno VARCHAR(10),
+    id_voo INT NOT NULL,
+    prioridade INT NOT NULL,
+    codIATA CHAR(3) NOT NULL,
+    codICAO CHAR(3) NOT NULL,
+    latitude_evento REAL NOT NULL,
+    longitude_evento REAL NOT NULL,
+    PRIMARY KEY (id_controlador),
+    FOREIGN KEY (id_voo, prioridade, codIATA, codICAO) REFERENCES Voo (id_voo, prioridade, codIATA, codICAO),
+    FOREIGN KEY (latitude_evento, longitude_evento) REFERENCES Evento (latitude_evento, longitude_evento)
+);
+
+CREATE TABLE FCA (
+    latitude_FCA REAL NOT NULL,
+    longitude_FCA REAL NOT NULL,
+    nome VARCHAR(10) NOT NULL,
+    qtd_voos_permitidos INT NOT NULL,
+    id_controlador INT,
+    PRIMARY KEY (latitude_FCA, longitude_FCA),
+    FOREIGN KEY (id_controlador) REFERENCES ControladordeVoo (id_controlador)
+);
+
+CREATE TABLE Informe (
+    codIATA CHAR(3) NOT NULL,
+    codICAO CHAR(3) NOT NULL,
+    rota_deferida INT NOT NULL,
+    id_controlador INT,
+    PRIMARY KEY (codIATA, codICAO),
+    FOREIGN KEY (codIATA, codICAO) REFERENCES CompanhiaAerea (codIATA, codICAO),
+    FOREIGN KEY (id_controlador) REFERENCES ControladordeVoo (id_controlador)
+);
+
+CREATE TABLE Rota (
+    id_rota INT NOT NULL,
+    horario_disponibilidade TIMESTAMP NOT NULL,
+    atraso TEXT NOT NULL, -- O SQLite não suporta INTERVAL diretamente
+    PRIMARY KEY (id_rota)
+);
+
+CREATE TABLE Alocacao (
+    id_rota INT NOT NULL,
+    id_controlador INT NOT NULL,
+    horario_chegada TIMESTAMP NOT NULL,
+    horario_partida TIMESTAMP NOT NULL,
+    id_voo INT,
+    prioridade INT,
+    codIATA CHAR(3),
+    codICAO CHAR(3),
+    PRIMARY KEY (id_rota, id_controlador),
+    FOREIGN KEY (id_rota) REFERENCES Rota (id_rota),
+    FOREIGN KEY (id_controlador) REFERENCES ControladordeVoo (id_controlador),
+    FOREIGN KEY (id_voo, prioridade, codIATA, codICAO) REFERENCES Voo (id_voo, prioridade, codIATA, codICAO)
+);

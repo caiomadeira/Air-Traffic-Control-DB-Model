@@ -1,0 +1,6 @@
+-- Brazillian Companies
+
+INSERT INTO CompanhiaAerea VALUES('LAT', 'LAE', 'Latam', 'Brasil', 150, 107, DATE('1976-01-01'));
+INSERT INTO CompanhiaAerea VALUES('G3', 'GLO', 'GOL', 'Brasil', 77, 144, DATE('2001-01-15'));
+INSERT INTO CompanhiaAerea VALUES('AD', 'AZU', 'AZUL', 'Brasil', 140, 160, DATE('2008-01-04'));
+INSERT INTO CompanhiaAerea VALUES('2Z', 'PTB', 'Voepass', 'Brasil', 47, 13, DATE('1995-07-03'));
