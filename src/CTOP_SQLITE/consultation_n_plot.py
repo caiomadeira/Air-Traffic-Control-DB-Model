@@ -46,11 +46,23 @@ for db_path, quantidade in db_info:
     tempos_query_bem_feita.append(tempo_bem_feita)
 
 # Plotando o gráfico
-plt.plot(quantidades, tempos_query_mal_feita, label="Query Mal Feita", marker='o')
-plt.plot(quantidades, tempos_query_bem_feita, label="Query Bem Feita", marker='o')
-plt.xlabel("Número de Registros no Banco")
-plt.ylabel("Tempo de Execução (segundos)")
-plt.title("Tempo de Execução de Consultas para Diferentes Bancos de Dados")
-plt.legend()
-plt.grid(True)
-plt.show()
+# Configurar valores específicos no eixo X
+
+def make_plot(x, y, title, color, savefilename):
+    plt.figure(figsize=(12, 6))
+    xticks = [50_000, 100_000, 200_000, 500_000, 1_000_000]
+    plt.xticks(xticks, labels=[f"{x:,}".replace(",", ".") for x in xticks])  # Formata com separador de milhar
+    plt.plot(y, x, label="Query Mal Feita", marker='o', color=color)
+    #plt.plot(quantidades, tempos_query_bem_feita, label="Query Bem Feita", marker='o', color='g')
+
+    plt.xlabel("Número de Registros no Banco")
+    plt.ylabel("Tempo de Execução (segundos)")
+    plt.title(title)
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(savefilename + ".png")
+    #plt.show()
+
+if __name__ == '__main__':
+    make_plot(tempos_query_bem_feita, quantidades, "Tempo de Execução de Consulta (com Query bem feita) em diferentes Bancos de Dados", 'g', "good_query_plot")
+    make_plot(tempos_query_mal_feita, quantidades, "Tempo de Execução de Consulta (com Query mal feita) em diferentes Bancos de Dados", 'r', "bad_query_plot")
