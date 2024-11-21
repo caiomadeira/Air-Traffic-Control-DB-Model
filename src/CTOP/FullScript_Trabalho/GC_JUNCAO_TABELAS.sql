@@ -8,7 +8,7 @@
 -- 2024-11-20. Como resultado, a consulta retorna o nome do controlador, o numero
 -- de cauda do avião, o modelo do avião e o destino do voo, ordenados pelo
 -- nome do controlador.
-SELECT c.nome AS nome_controlador, v.numero_cauda, a.modelo, v.destino
+SELECT c.nome AS nome_controlador, v.numero_cauda, av.modelo, v.destino
 FROM ControladordeVoo c 
 JOIN Voo v ON c.id_voo = v.id_voo AND c.codIATA = v.codIATA AND c.codICAO = v.codICAO
 JOIN Aviao av ON v.numero_cauda = av.numero_cauda
