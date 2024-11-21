@@ -13,3 +13,6 @@ FROM ControladordeVoo c
 JOIN Voo v ON c.id_voo = v.id_voo AND c.codIATA = v.codIATA AND c.codICAO = v.codICAO
 JOIN Aviao av ON v.numero_cauda = av.numero_cauda
 WHERE v.data_voo > '2024-11-20' ORDER BY c.nome;
+
+
+
